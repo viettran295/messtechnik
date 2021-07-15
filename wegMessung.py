@@ -27,18 +27,15 @@ def Zeichen(x1:List[float], x2:List[float], x3:List[float], x4:List[float], y:Li
     plt.legend(loc='upper left')
     plt.show()
 
-def Regression(x:List[float], y1:List[float], y2:List[float], y3:List[float], y4:List[float], y:List[int]):
+def Regression(x:List[float], y:List[int], y1:List[float]):
     plt.style.use('Solarize_Light2')
     #graph title
     plt.title("Regression", loc='center')
     plt.xlabel('Prozent %')
-    plt.ylabel('Master [mm]')
+    plt.ylabel('[mm]')
     #line style
-    plt.plot(x,y, label='Master')
-    plt.scatter(x,y1, label='MRU')
-    plt.scatter(x,y2, label='TLI')
-    plt.scatter(x,y3, label='TLC')
-    plt.scatter(x,y4, label='WS12')
+    plt.scatter(x,y, label='WS12', color='r')
+    plt.plot(x,y1, label='Regression', linewidth=1)
     plt.legend(loc='upper left')
     plt.show()
 
@@ -49,7 +46,7 @@ def Abweichung(x:List[float], y1:List[float]):
     abw = 0.05/100*750
     plt.title("Abweichung", loc='center')
     plt.xlabel('Prozent %')
-    plt.ylabel('Abweichung [mm]')
+    plt.ylabel('[mm]')
     #line style
     plt.axhline(y=0, color='r', linewidth=0.5)
     plt.axhline(y=abw, color='b', linewidth=0.5)
@@ -104,6 +101,25 @@ if __name__=="__main__":
     TLI_Hys_mittel_mm = [196.36, 196.96]
     TLC_Hys_mittel_mm = [200.05, 199.755]
     WS12_Hys_mittel_mm = [195.75, 196.25]
+    
+    #Regression 
+    #MRU
+    MRU_Regress = [] 
+    for i in Prozent:
+        MRU_Regress.append(i*3.42065+16.1224)
+    #TLI
+    TLI_Regress = []
+    for i in Prozent:
+        TLI_Regress.append(i*3.69+11.948)
+    #TLC
+    TLC_Regress = []
+    for i in Prozent:
+        TLC_Regress.append(i*3.693+15.089)
+    #WS12
+    WS12_Regress = []
+    for i in Prozent:
+        WS12_Regress.append(i*3.734+8.6875)
+
     #Abweichung
     MRU_abw = [] 
     TLI_abw = []
@@ -112,13 +128,13 @@ if __name__=="__main__":
     #Abw in mm 
     for i in range(len(Master)):
         MRU_mm.append(Umformer(304.8, MRU_V[i]))
-        MRU_abw.append(MRU_mm[i] - Master[i])
+        MRU_abw.append(MRU_mm[i] - MRU_Regress[i])
         TLI_mm.append(Umformer(400,TLI_V[i]))
-        TLI_abw.append(TLI_mm[i] - Master[i])
+        TLI_abw.append(TLI_mm[i] - TLI_Regress[i])
         TLC_mm.append(Umformer(450,TLC_V[i]))
-        TLC_abw.append(TLC_mm[i] - Master[i])
+        TLC_abw.append(TLC_mm[i] - TLC_Regress[i])
         WS12_mm.append(Umformer(750,WS12_V[i]))
-        WS12_abw.append(WS12_mm[i] - Master[i])
+        WS12_abw.append(WS12_mm[i] - WS12_Regress[i])
     
     #Hysterese in mm 
     for i in range(len(MRU_Hys_V)):
@@ -127,6 +143,6 @@ if __name__=="__main__":
         TLC_Hys_mm.append(Umformer(450,TLC_Hys_V[i]))
         WS12_Hys_mm.append(Umformer(750,WS12_Hys_V[i]))
     #Zeichen(MRU_mm, TLI_mm, TLC_mm, WS12_mm, Master)
-    # Regression(Prozent, MRU_mm, TLI_mm, TLC_mm, WS12_mm, Master)
-    # Abweichung(Prozent, WS12_abw)
-    Hysterese(Prozent_Hys, MRU_Hys_mittel_mm, TLI_Hys_mittel_mm, TLC_Hys_mittel_mm, WS12_Hys_mittel_mm)
+    Regression(Prozent, WS12_mm, WS12_Regress)
+    #Abweichung(Prozent, WS12_abw)
+    #Hysterese(Prozent_Hys, MRU_Hys_mittel_mm, TLI_Hys_mittel_mm, TLC_Hys_mittel_mm, WS12_Hys_mittel_mm)
